@@ -6,7 +6,7 @@ __WIP__
 
 ## Introduction
 
-This module gives you a better support to run windows commands with elevated privileges.
+This module gives you a more complete support to run windows commands with elevated privileges.
 
 ## What s the problem
 

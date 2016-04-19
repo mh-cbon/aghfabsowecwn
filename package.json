@@ -1,7 +1,7 @@
 {
   "name": "@mh-cbon/aghfabsowecwn",
   "version": "1.0.0",
-  "description": "A better support of windows elevated commands with Node",
+  "description": "A more complete support of windows elevated commands with Node",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
