@@ -34,7 +34,7 @@ It s also more than possible that alternatives solution using binaries exists,
 
 I m not aware of them / I wish not to use a black box.
 
-## What s this module enhances
+## What s this module enhancements
 
 This module provides
 
