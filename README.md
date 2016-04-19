@@ -114,7 +114,7 @@ The short story is,
 - spawns your command with elevated privileges and connects it to the server
 
 The server help to escape signals and data
-from the elevated child to the userland via the server
+from the elevated child to the userland 
 (socket to pipe / pipe to socket).
 
 ```
