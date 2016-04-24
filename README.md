@@ -114,7 +114,7 @@ The short story is,
 - spawns your command with elevated privileges and connects it to the server
 
 The server help to escape signals and data
-from the elevated child to the userland 
+from the elevated child to the userland
 (socket to pipe / pipe to socket).
 
 ```
@@ -134,7 +134,7 @@ controlout    [user] <=== [server] <=== [elevated]
 
 - remember that the remote child is not running with a `TTY`,
 so the behavior may be a bit different (no color support for example)
-- spawn child properties/methods call are available only once `ready` event is emitted.
+- spawn child properties/methods call are available only once `started` event is emitted.
 - `ENV` variables __are not__ automatically sent to the elevated process, you got to do it
 
 # Todos

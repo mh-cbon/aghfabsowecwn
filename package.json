@@ -14,7 +14,10 @@
     "public": "npm publish --access=public"
   },
   "keywords": [
-    "windows", "elevate", "admin", "root"
+    "windows",
+    "elevate",
+    "admin",
+    "root"
   ],
   "author": "mh-cbon <mh-cbon@users.noreply.github.com>",
   "license": "MIT",
@@ -23,8 +26,10 @@
     "should": "^8.3.1"
   },
   "dependencies": {
+    "@mh-cbon/remote-child_process": "github:mh-cbon/remote-child_process",
     "async": "^1.5.2",
     "debug": "^2.2.0",
+    "get-port": "^2.1.0",
     "split": "^1.0.0",
     "through2": "^2.0.1"
   }

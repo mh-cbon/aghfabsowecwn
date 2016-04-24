@@ -2,7 +2,7 @@ var aghfabsowecwn = require('./index.js');
 var spawn = aghfabsowecwn.spawn;
 
 var opts = {
-  bridgeTimeout: 5000,
+  bridgeTimeout: 1000,
   stdio: 'pipe',
   env:{'FORCE_COLOR':1, 'DEBUG': '*'}
 }
@@ -29,7 +29,7 @@ child.stdout.pipe(process.stdout)
 child.stderr.pipe(process.stderr)
 
 child.stdin.write('some');
-// child.stdin.end();
+child.stdin.end();
 setTimeout(function () {
-  child.kill();
+  // child.kill();
 }, 1000)
