@@ -2,8 +2,6 @@
 
 A Giant Hack For A Better Support Of Windows Elevated Commands With Node
 
-__WIP__
-
 ## Introduction
 
 This module gives you a more complete support to run windows commands with elevated privileges.
