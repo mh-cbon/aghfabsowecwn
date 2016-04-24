@@ -75,7 +75,7 @@ var child = spawn(process.argv[0], [__dirname + '/test/utils/stdin.js'], opts);
 // for debugging purpose, it s also compatible with *nux
 // var child = spawn('sh', ['-c', 'ls -al && echo "stderr" >&2'], opts);
 
-child.on('ready', function () {
+child.on('started', function () {
   console.log('===> child pid=%s', child.pid)
 })
 
