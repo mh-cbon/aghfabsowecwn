@@ -53,13 +53,14 @@ npm i @mh-cbon/aghfabsowecwn --save
 
 # Usage
 
+### spawn
+
 ```js
 var spawn = require('@mh-cbon/aghfabsowecwn').spawn;
 
 var opts = {
   bridgeTimeout: 5000,    // a timeout to detect that UAC was not validated, defaults to 3 minutes
   stdio: 'pipe',          // How do you want your pipes ?
-  // sends environment variables, by default they are not propagated
   env:{
     'FORCE_COLOR':1,  // example, enable chalk coloring  
     'DEBUG': '*'      // example, enable visionmedia/debug output
@@ -67,11 +68,6 @@ var opts = {
 }
 
 var child = spawn(process.argv[0], [__dirname + '/test/utils/stdin.js'], opts);
-
-// var child = spawn('nop no such thing', [__dirname + '/test/utils/stdin.js'], opts);
-
-// for debugging purpose, it s also compatible with *nux
-// var child = spawn('sh', ['-c', 'ls -al && echo "stderr" >&2'], opts);
 
 child.on('started', function () {
   console.log('===> child pid=%s', child.pid)
@@ -89,6 +85,7 @@ child.on('exit', function (code) {
 child.on('error', function (error) {
   console.log('===> child error=%s', error)
   console.log('===> child error=%j', error)
+  if (err.code==='ECONNREFUSED') console.log('UAC was probably not validated.')
 })
 
 child.stdout.pipe(process.stdout)
@@ -96,9 +93,54 @@ child.stderr.pipe(process.stderr)
 
 child.stdin.write('some');
 // child.stdin.end();
-setTimeout(function () {
-  child.kill();
-}, 1000)
+child.once('started', function () {
+  setTimeout(function () {
+    child.kill();
+  }, 1000)
+})
+```
+
+### exec
+
+```js
+var exec = require('@mh-cbon/aghfabsowecwn').exec;
+
+var opts = {
+  bridgeTimeout: 5000,    // a timeout to detect that UAC was not validated, defaults to 3 minutes
+  stdio: 'pipe',          // How do you want your pipes ?
+  env:{
+    'FORCE_COLOR':1,  // example, enable chalk coloring  
+    'DEBUG': '*'      // example, enable visionmedia/debug output
+  }
+}
+
+var child = exec('ls -al', opts, function (err, stdout, stderr) {
+  console.log('===> child error=%s', error)
+  console.log('===> child error=%j', error)
+  if (err.code==='ECONNREFUSED') console.log('UAC was probably not validated.')
+  console.log("stdout=%s", stdout);
+  console.error("stderr=%s", stderr);
+});
+
+child.on('started', function () {
+  console.log('===> child pid=%s', child.pid)
+})
+
+child.on('close', function (code) {
+  console.log('===> child close code=%s', code)
+})
+
+child.on('exit', function (code) {
+  console.log('===> child exit code=%s', code)
+})
+
+// if UAC is not validated, or refused, an error is emitted
+child.on('error', function (error) {
+  console.log('===> child error=%s', error)
+  console.log('===> child error=%j', error)
+  if (err.code==='ECONNREFUSED') console.log('UAC was probably not validated.')
+})
+
 ```
 
 # Internals
@@ -106,10 +148,14 @@ setTimeout(function () {
 This modules is a giant hack because it uses overkill techniques to achieve something which seems rather simple.
 
 The short story is,
-- the module spawns a server on a random address,
-- connects a client on this server to expose a fake child_process API to your script
-- invoke a windows command elevator to run your commands with elevated privileges,
-- spawns your command with elevated privileges and connects it to the server
+- the module spawns a server on a random address with an elevated process,
+- a client is spawned and wait for the server to be alive,
+- the client throws an `ECONNREFUSED` error when `UAC` was not accepted
+- the client create an instance of `FakeChild`,
+- the client connects multiple sockets with the server to emulate `pipes, events, methods, FD`
+- the client sends the command to run to the elevated server process
+- the server runs the command and exports any signal to the client
+- the client forwards the signals to the fake child instance
 
 The server help to escape signals and data
 from the elevated child to the userland
