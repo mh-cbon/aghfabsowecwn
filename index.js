@@ -36,7 +36,7 @@ var executeRemoteChildProcess = function (runOpts, options) {
           }
           clearTimeout(maxTimeout);
           child.emit('error', err);
-          return child.emit('close')
+          return child.emit('close', -2) //unsure which code is correct
         }
         clearTimeout(maxTimeout);
         delete options.bridgeTimeout;

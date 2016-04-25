@@ -26,11 +26,8 @@
     "should": "^8.3.1"
   },
   "dependencies": {
-    "@mh-cbon/remote-child_process": "github:mh-cbon/remote-child_process",
-    "async": "^1.5.2",
+    "@mh-cbon/remote-child_process": "^1.0.1",
     "debug": "^2.2.0",
-    "get-port": "^2.1.0",
-    "split": "^1.0.0",
-    "through2": "^2.0.1"
+    "get-port": "^2.1.0"
   }
 }

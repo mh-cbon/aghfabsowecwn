@@ -133,7 +133,6 @@ controlout    [user] <=== [server] <=== [elevated]
 - remember that the remote child is not running with a `TTY`,
 so the behavior may be a bit different (no color support for example)
 - spawn child properties/methods call are available only once `started` event is emitted.
-- `ENV` variables __are not__ automatically sent to the elevated process, you got to do it
 
 # Todos
 
