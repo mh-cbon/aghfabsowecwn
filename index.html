@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Aghfabsowecwn by mh-cbon</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Aghfabsowecwn</h1>
+      <h2 class="project-tagline">A more complete support of windows elevated commands with Node</h2>
+      <a href="https://github.com/mh-cbon/aghfabsowecwn" class="btn">View on GitHub</a>
+      <a href="https://github.com/mh-cbon/aghfabsowecwn/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/mh-cbon/aghfabsowecwn/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="aghfabsowecwn---aka-wtf" class="anchor" href="#aghfabsowecwn---aka-wtf" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>aghfabsowecwn - aka wtf</h1>
+
+<p>A Giant Hack For A Better Support Of Windows Elevated Commands With Node</p>
+
+<h2>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>This module gives you a more complete support to run windows commands with elevated privileges.</p>
+
+<h2>
+<a id="what-s-the-problem" class="anchor" href="#what-s-the-problem" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What s the problem</h2>
+
+<p>Running windows elevated command with node is not simple,</p>
+
+<ul>
+<li>loss of <code>FD[0,1,2]</code>
+</li>
+<li>loss of <code>return codes</code>
+</li>
+<li>loss of control over the elevated process</li>
+</ul>
+
+<p>Solutions exists on <code>npm</code>, but they all have drawbacks such as,</p>
+
+<ul>
+<li>provide only a mimic of <code>child_process.exec</code>,</li>
+<li>no support of <code>child_process.spawn</code>
+</li>
+<li>poorly reports about <code>UAC</code> validation</li>
+<li>poorly reports about exit codes</li>
+<li>no support to call methods on elevated process such as <code>kill</code>
+</li>
+<li>no support to listen emitted evens by the elevated process</li>
+</ul>
+
+<p>Find out more at</p>
+
+<ul>
+<li><a href="https://github.com/coreybutler/node-windows/issues/46">https://github.com/coreybutler/node-windows/issues/46</a></li>
+<li><a href="https://github.com/ChristopherHaws/node-windows-elevate">https://github.com/ChristopherHaws/node-windows-elevate</a></li>
+<li><a href="https://github.com/tehsenaus/windosu/issues/2">https://github.com/tehsenaus/windosu/issues/2</a></li>
+</ul>
+
+<p>It s also more than possible that alternatives solution using binaries exists,</p>
+
+<p>I m not aware of them / I wish not to use a black box.</p>
+
+<h2>
+<a id="what-s-this-module-enhancements" class="anchor" href="#what-s-this-module-enhancements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What s this module enhancements</h2>
+
+<p>This module provides</p>
+
+<ul>
+<li>support for <code>child_process.spawn</code>
+</li>
+<li>support for commons fds : <code>stdin</code>, <code>stdout</code>, <code>stderr</code>
+</li>
+<li>support for methods call : <code>kill</code>
+</li>
+<li>support to detect unvalidated <code>UAC</code>
+</li>
+<li>support for <code>return codes</code>
+</li>
+<li>support of elevated process <code>events</code>
+</li>
+<li>does not need any sort of binary</li>
+<li>automatic fix of <code>cwd</code> for the elevated process</li>
+</ul>
+
+<h1>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install</h1>
+
+<div class="highlight highlight-source-shell"><pre>npm i @mh-cbon/aghfabsowecwn --save</pre></div>
+
+<h1>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h1>
+
+<h3>
+<a id="spawn" class="anchor" href="#spawn" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>spawn</h3>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> spawn <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>@mh-cbon/aghfabsowecwn<span class="pl-pds">'</span></span>).<span class="pl-smi">spawn</span>;
+
+<span class="pl-k">var</span> opts <span class="pl-k">=</span> {
+  bridgeTimeout<span class="pl-k">:</span> <span class="pl-c1">5000</span>,    <span class="pl-c">// a timeout to detect that UAC was not validated, defaults to 3 minutes</span>
+  stdio<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>pipe<span class="pl-pds">'</span></span>,          <span class="pl-c">// How do you want your pipes ?</span>
+  env<span class="pl-k">:</span>{
+    <span class="pl-s"><span class="pl-pds">'</span>FORCE_COLOR<span class="pl-pds">'</span></span><span class="pl-k">:</span><span class="pl-c1">1</span>,  <span class="pl-c">// example, enable chalk coloring  </span>
+    <span class="pl-s"><span class="pl-pds">'</span>DEBUG<span class="pl-pds">'</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>      <span class="pl-c">// example, enable visionmedia/debug output</span>
+  }
+}
+
+<span class="pl-k">var</span> child <span class="pl-k">=</span> <span class="pl-en">spawn</span>(<span class="pl-c1">process</span>.<span class="pl-smi">argv</span>[<span class="pl-c1">0</span>], [<span class="pl-c1">__dirname</span> <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">'</span>/test/utils/stdin.js<span class="pl-pds">'</span></span>], opts);
+
+<span class="pl-smi">child</span>.<span class="pl-en">on</span>(<span class="pl-s"><span class="pl-pds">'</span>started<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {
+  <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>===&gt; child pid=%s<span class="pl-pds">'</span></span>, <span class="pl-smi">child</span>.<span class="pl-smi">pid</span>)
+})
+
+<span class="pl-smi">child</span>.<span class="pl-en">on</span>(<span class="pl-s"><span class="pl-pds">'</span>close<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> (<span class="pl-smi">code</span>) {
+  <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>===&gt; child close code=%s<span class="pl-pds">'</span></span>, code)
+})
+
+<span class="pl-smi">child</span>.<span class="pl-en">on</span>(<span class="pl-s"><span class="pl-pds">'</span>exit<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> (<span class="pl-smi">code</span>) {
+  <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>===&gt; child exit code=%s<span class="pl-pds">'</span></span>, code)
+})
+
+<span class="pl-c">// if UAC is not validated, or refused, an error is emitted</span>
+<span class="pl-smi">child</span>.<span class="pl-en">on</span>(<span class="pl-s"><span class="pl-pds">'</span>error<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> (<span class="pl-smi">error</span>) {
+  <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>===&gt; child error=%s<span class="pl-pds">'</span></span>, error)
+  <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>===&gt; child error=%j<span class="pl-pds">'</span></span>, error)
+  <span class="pl-k">if</span> (<span class="pl-smi">err</span>.<span class="pl-c1">code</span><span class="pl-k">===</span><span class="pl-s"><span class="pl-pds">'</span>ECONNREFUSED<span class="pl-pds">'</span></span>) <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>UAC was probably not validated.<span class="pl-pds">'</span></span>)
+})
+
+<span class="pl-smi">child</span>.<span class="pl-smi">stdout</span>.<span class="pl-en">pipe</span>(<span class="pl-c1">process</span>.<span class="pl-smi">stdout</span>)
+<span class="pl-smi">child</span>.<span class="pl-smi">stderr</span>.<span class="pl-en">pipe</span>(<span class="pl-c1">process</span>.<span class="pl-smi">stderr</span>)
+
+<span class="pl-smi">child</span>.<span class="pl-smi">stdin</span>.<span class="pl-c1">write</span>(<span class="pl-s"><span class="pl-pds">'</span>some<span class="pl-pds">'</span></span>);
+<span class="pl-c">// child.stdin.end();</span>
+<span class="pl-smi">child</span>.<span class="pl-en">once</span>(<span class="pl-s"><span class="pl-pds">'</span>started<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {
+  <span class="pl-c1">setTimeout</span>(<span class="pl-k">function</span> () {
+    <span class="pl-smi">child</span>.<span class="pl-en">kill</span>();
+  }, <span class="pl-c1">1000</span>)
+})</pre></div>
+
+<h3>
+<a id="exec" class="anchor" href="#exec" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>exec</h3>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> exec <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>@mh-cbon/aghfabsowecwn<span class="pl-pds">'</span></span>).<span class="pl-smi">exec</span>;
+
+<span class="pl-k">var</span> opts <span class="pl-k">=</span> {
+  bridgeTimeout<span class="pl-k">:</span> <span class="pl-c1">5000</span>,    <span class="pl-c">// a timeout to detect that UAC was not validated, defaults to 3 minutes</span>
+  stdio<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>pipe<span class="pl-pds">'</span></span>,          <span class="pl-c">// How do you want your pipes ?</span>
+  env<span class="pl-k">:</span>{
+    <span class="pl-s"><span class="pl-pds">'</span>FORCE_COLOR<span class="pl-pds">'</span></span><span class="pl-k">:</span><span class="pl-c1">1</span>,  <span class="pl-c">// example, enable chalk coloring  </span>
+    <span class="pl-s"><span class="pl-pds">'</span>DEBUG<span class="pl-pds">'</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>*<span class="pl-pds">'</span></span>      <span class="pl-c">// example, enable visionmedia/debug output</span>
+  }
+}
+
+<span class="pl-k">var</span> child <span class="pl-k">=</span> <span class="pl-en">exec</span>(<span class="pl-s"><span class="pl-pds">'</span>ls -al<span class="pl-pds">'</span></span>, opts, <span class="pl-k">function</span> (<span class="pl-smi">err</span>, <span class="pl-smi">stdout</span>, <span class="pl-smi">stderr</span>) {
+  <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>===&gt; child error=%s<span class="pl-pds">'</span></span>, error)
+  <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>===&gt; child error=%j<span class="pl-pds">'</span></span>, error)
+  <span class="pl-k">if</span> (<span class="pl-smi">err</span>.<span class="pl-c1">code</span><span class="pl-k">===</span><span class="pl-s"><span class="pl-pds">'</span>ECONNREFUSED<span class="pl-pds">'</span></span>) <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>UAC was probably not validated.<span class="pl-pds">'</span></span>)
+  <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">"</span>stdout=%s<span class="pl-pds">"</span></span>, stdout);
+  <span class="pl-en">console</span>.<span class="pl-c1">error</span>(<span class="pl-s"><span class="pl-pds">"</span>stderr=%s<span class="pl-pds">"</span></span>, stderr);
+});
+
+<span class="pl-smi">child</span>.<span class="pl-en">on</span>(<span class="pl-s"><span class="pl-pds">'</span>started<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> () {
+  <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>===&gt; child pid=%s<span class="pl-pds">'</span></span>, <span class="pl-smi">child</span>.<span class="pl-smi">pid</span>)
+})
+
+<span class="pl-smi">child</span>.<span class="pl-en">on</span>(<span class="pl-s"><span class="pl-pds">'</span>close<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> (<span class="pl-smi">code</span>) {
+  <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>===&gt; child close code=%s<span class="pl-pds">'</span></span>, code)
+})
+
+<span class="pl-smi">child</span>.<span class="pl-en">on</span>(<span class="pl-s"><span class="pl-pds">'</span>exit<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> (<span class="pl-smi">code</span>) {
+  <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>===&gt; child exit code=%s<span class="pl-pds">'</span></span>, code)
+})
+
+<span class="pl-c">// if UAC is not validated, or refused, an error is emitted</span>
+<span class="pl-smi">child</span>.<span class="pl-en">on</span>(<span class="pl-s"><span class="pl-pds">'</span>error<span class="pl-pds">'</span></span>, <span class="pl-k">function</span> (<span class="pl-smi">error</span>) {
+  <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>===&gt; child error=%s<span class="pl-pds">'</span></span>, error)
+  <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>===&gt; child error=%j<span class="pl-pds">'</span></span>, error)
+  <span class="pl-k">if</span> (<span class="pl-smi">err</span>.<span class="pl-c1">code</span><span class="pl-k">===</span><span class="pl-s"><span class="pl-pds">'</span>ECONNREFUSED<span class="pl-pds">'</span></span>) <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>UAC was probably not validated.<span class="pl-pds">'</span></span>)
+})
+</pre></div>
+
+<h1>
+<a id="internals" class="anchor" href="#internals" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Internals</h1>
+
+<p>This modules is a giant hack because it uses overkill techniques to achieve something which seems rather simple.</p>
+
+<p>The short story is,</p>
+
+<ul>
+<li>the module spawns a server on a random address with an elevated process,</li>
+<li>a client is spawned and wait for the server to be alive,</li>
+<li>the client throws an <code>ECONNREFUSED</code> error when <code>UAC</code> was not accepted</li>
+<li>the client create an instance of <code>FakeChild</code>,</li>
+<li>the client connects multiple sockets with the server to emulate <code>pipes, events, methods, FD</code>
+</li>
+<li>the client sends the command to run to the elevated server process</li>
+<li>the server runs the command and exports any signal to the client</li>
+<li>the client forwards the signals to the fake child instance</li>
+</ul>
+
+<p>The server help to escape signals and data
+from the elevated child to the userland
+(socket to pipe / pipe to socket).</p>
+
+<pre><code>FD[0,1,2]
+stderr        [user] &lt;=== [server] &lt;=== [elevated]
+stdout        [user] &lt;=== [server] &lt;=== [elevated]
+stdin         [user] ===&gt; [server] ===&gt; [elevated]
+
+Method calls
+controlin     [user] ===&gt; [server] ===&gt; [elevated]
+
+emitted events &amp;&amp; set properties
+controlout    [user] &lt;=== [server] &lt;=== [elevated]
+</code></pre>
+
+<h4>
+<a id="other-notes" class="anchor" href="#other-notes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Other notes</h4>
+
+<ul>
+<li>remember that the remote child is not running with a <code>TTY</code>,
+so the behavior may be a bit different (no color support for example)</li>
+<li>spawn child properties/methods call are available only once <code>started</code> event is emitted.</li>
+</ul>
+
+<h1>
+<a id="todos" class="anchor" href="#todos" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Todos</h1>
+
+<ul>
+<li>write the tests</li>
+</ul>
+
+<h1>
+<a id="read-more" class="anchor" href="#read-more" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Read more</h1>
+
+<ul>
+<li><a href="http://digitaldrummerj.me/vagrant-fixing-opentable-basebox/">http://digitaldrummerj.me/vagrant-fixing-opentable-basebox/</a></li>
+<li><a href="https://github.com/coreybutler/node-windows">https://github.com/coreybutler/node-windows</a></li>
+<li><a href="https://github.com/ChristopherHaws/node-windows-elevate">https://github.com/ChristopherHaws/node-windows-elevate</a></li>
+<li><a href="https://github.com/tehsenaus/windosu">https://github.com/tehsenaus/windosu</a></li>
+</ul>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/mh-cbon/aghfabsowecwn">Aghfabsowecwn</a> is maintained by <a href="https://github.com/mh-cbon">mh-cbon</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
