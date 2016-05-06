@@ -13,15 +13,23 @@ var executeRemoteChildProcess = function (runOpts, options) {
   var child = new FakeChild(options.stdio);
   var client = new RcpClient();
 
+  var needServer = !runOpts.address;
+
   getPort().then(port => {
-    runOpts.address = {
+    runOpts.address = runOpts.address || {
       hostname: '127.0.0.1',
       port: port
     };
 
     var maxTimeoutLen = options.bridgeTimeout || 1000 * 60 * 3;
 
-    invokeElevatedCmd(runOpts.address, maxTimeoutLen);
+    if (needServer) {
+      var serverOptions = {
+        maxTimeoutLen: maxTimeoutLen,
+        autoClose: true
+      }
+      invokeElevatedCmd(runOpts.address, serverOptions);
+    }
 
     var mustFinish = false;
     var maxTimeout = setTimeout(function () {

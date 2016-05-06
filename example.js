@@ -33,6 +33,6 @@ child.stdin.write('some');
 // child.stdin.end();
 child.once('started', function () {
   setTimeout(function () {
-    child.kill();
+    child.kill(); // triggers a SIGTERM.
   }, 1000)
 })
