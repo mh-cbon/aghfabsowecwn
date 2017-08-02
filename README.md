@@ -138,7 +138,7 @@ child.on('exit', function (code) {
 child.on('error', function (error) {
   console.log('===> child error=%s', error)
   console.log('===> child error=%j', error)
-  if (err.code==='ECONNREFUSED') console.log('UAC was probably not validated.')
+  if (error.code==='ECONNREFUSED') console.log('UAC was probably not validated.')
 })
 
 ```
