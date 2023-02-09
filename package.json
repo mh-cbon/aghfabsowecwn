@@ -1,6 +1,6 @@
 {
   "name": "@mh-cbon/aghfabsowecwn",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "A more complete support of windows elevated commands with Node",
   "main": "index.js",
   "scripts": {
