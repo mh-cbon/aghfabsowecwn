@@ -18,7 +18,8 @@ var executeRemoteChildProcess = function (runOpts, options) {
   getPort().then(port => {
     runOpts.address = runOpts.address || {
       hostname: '127.0.0.1',
-      port: port
+      port: port,
+	  family: 4
     };
 
     var maxTimeoutLen = options.bridgeTimeout || 1000 * 60 * 3;
